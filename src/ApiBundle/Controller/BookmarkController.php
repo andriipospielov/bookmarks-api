@@ -8,6 +8,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use ApiBundle\Entity\Bookmark;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class BookmarkController extends Controller
 {
@@ -22,10 +25,11 @@ class BookmarkController extends Controller
         $query = $em->createQuery(
             ' SELECT b
                   FROM ApiBundle:Bookmark b
+                  ORDER BY b.createdAt DESC 
                   '
         );
 
-        $bookmarks = $query->getArrayResult();
+        $bookmarks = $query->setMaxResults(10)->getArrayResult();
 
         return JsonResponse::create(
             [
@@ -82,19 +86,18 @@ class BookmarkController extends Controller
     /**
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return Response
      * @ParamConverter("bookmark", class="ApiBundle:Bookmark")
      */
     public function showAction(Bookmark $bookmark)
     {
+        $comments = $bookmark->getComments();
 
-        return JsonResponse::create(
-            [
-                'status' => 'ok',
-                'comments' => $bookmark->getComments()->toArray(),
-            ],
-            Response::HTTP_OK
-        );
+        $normalizer = new ObjectNormalizer();
+        $normalizer->setIgnoredAttributes(array('bookmark'));
+        $serializer = new Serializer([$normalizer], [new JsonEncoder()]);
+        $jsonifiedData = $serializer->serialize($comments, 'json');
+        return Response::create($jsonifiedData, Response::HTTP_OK);
     }
 
 
