@@ -76,7 +76,7 @@ class Comment
      * @param string $ipAddress
      * @return Comment
      */
-    public function setIpAddress(string $ipAddress)
+    public function setIpAddress( $ipAddress)
     {
         $this->ipAddress = $ipAddress;
         return $this;

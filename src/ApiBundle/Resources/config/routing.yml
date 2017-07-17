@@ -1,3 +1,25 @@
-api_homepage:
-    path:     /
-    defaults: { _controller: ApiBundle:Default:index }
+#bookmarks
+api.bookmarks_index:
+    path: /bookmarks/
+    methods: GET
+    defaults: {_controller: ApiBundle:Bookmark:index}
+
+api.bookmarks_show:
+    path: /bookmarks/{url}
+    methods: GET
+    defaults:    {_controller: ApiBundle:Bookmark:show}
+
+api.bookmarks_store:
+    path: /bookmarks/
+    methods: POST
+    defaults:   {_controller: ApiBundle:Bookmark:store}
+
+
+#comments
+api.comments_store:
+  path: /comments/bookmark/{id}
+  methods: POST
+  defaults:   {_controller: ApiBundle:Comment:store}
+
+
+

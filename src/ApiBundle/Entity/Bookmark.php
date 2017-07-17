@@ -45,6 +45,12 @@ class Bookmark
     /**
      * @return mixed
      */
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
+
     public function getComments()
     {
         return $this->comments;
